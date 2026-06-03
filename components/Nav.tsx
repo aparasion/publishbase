@@ -6,16 +6,17 @@ import { Button } from '@/components/ui/button'
 
 interface NavProps {
   isAdmin: boolean
+  isLoggedIn: boolean
 }
 
-export function Nav({ isAdmin }: NavProps) {
+export function Nav({ isAdmin, isLoggedIn }: NavProps) {
   const pathname = usePathname()
   const router = useRouter()
 
   async function signOut() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/login')
+    router.push('/feed')
     router.refresh()
   }
 
@@ -43,9 +44,15 @@ export function Nav({ isAdmin }: NavProps) {
             )}
           </nav>
         </div>
-        <Button variant="ghost" size="sm" onClick={signOut}>
-          Sign out
-        </Button>
+        {isLoggedIn ? (
+          <Button variant="ghost" size="sm" onClick={signOut}>
+            Sign out
+          </Button>
+        ) : (
+          <Link href="/login" className="text-sm text-slate-500 hover:text-slate-900">
+            Sign in
+          </Link>
+        )}
       </div>
     </header>
   )

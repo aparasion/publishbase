@@ -25,13 +25,16 @@ export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
   const isAuthRoute = path.startsWith('/login')
   const isApiRoute = path.startsWith('/api')
+  const isAdminRoute = path.startsWith('/admin')
 
-  if (!user && !isAuthRoute && !isApiRoute) {
+  // Only admin routes require login
+  if (!user && isAdminRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
+  // Redirect logged-in users away from login page
   if (user && isAuthRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/feed'
